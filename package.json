@@ -1,0 +1,27 @@
+{
+  "name": "portfolio_project_api",
+  "version": "1.0.0",
+  "description": "Repository for an API for all the projects I've created as an API endpoint",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TottySnowman/portfolio_project_api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TottySnowman/portfolio_project_api/issues"
+  },
+  "homepage": "https://github.com/TottySnowman/portfolio_project_api#readme",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mysql": "^2.18.1"
+  }
+}
