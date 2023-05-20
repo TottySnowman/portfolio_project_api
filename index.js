@@ -4,13 +4,11 @@ const cors = require("cors");
 const config = require("./dbConfig");
 const app = express();
 const mysql = require("mysql");
-const os = require("os");
 
 app.use(cors());
 app.use(bodyParser.json());
 app.use("/logo", express.static("logo"));
 app.get("/getAllProjects", function (req, res) {
-  console.log(os.hostname());
   const connection = mysql.createConnection(config);
 
   connection.connect(function (connection_error) {
@@ -32,7 +30,11 @@ app.get("/getAllProjects", function (req, res) {
         }
 
         connection.end(); // Close the connection
-
+        projects.forEach((element) => {
+          let oldPath = element.Logo_Path;
+          element.Logo_Path = process.env.CYCLIC_URL + oldPath;
+        });
+        console.log(projects);
         res.json(projects);
       }
     );
