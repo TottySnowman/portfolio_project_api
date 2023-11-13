@@ -20,7 +20,13 @@ app.get("/getAllProjects", function (req, res) {
     }
 
     connection.query(
-      "SELECT * FROM Project where FK_Project_Status = '5'",
+      `SELECT Project.ID, Project.Name, Project.About, Project.Github_Link, 
+        Project.Demo_Link, Project.Logo_Path, status.Status, Tag.Tag 
+        FROM Project 
+        INNER JOIN ProjectStatus as status on Project.FK_Project_Status = status.ID 
+        INNER JOIN Project_Tags on Project_Tags.ProjectID = Project.ID 
+        INNER JOIN  Tag on Project_Tags.TagID = Tag.ID
+        ORDER BY Project.ID`,
       function (err, projects) {
         if (err) {
           // Handle query error
@@ -30,12 +36,33 @@ app.get("/getAllProjects", function (req, res) {
         }
 
         connection.end(); // Close the connection
-        projects.forEach((element) => {
+
+        /*         projects.forEach((element) => {
           let oldPath = element.Logo_Path;
           element.Logo_Path = process.env.CYCLIC_URL + oldPath;
-        });
-        console.log(projects);
-        res.json(projects);
+        }); */
+        const formattedResult = projects.reduce((acc, row) => {
+          const project = acc.find((p) => p.ProjectID === row.ID);
+
+          if (!project) {
+            acc.push({
+              ProjectID: row.ID,
+              Name: row.Name,
+              About: row.About,
+              Github_Link: row.Github_Link,
+              Demo_Link: row.Demo_Link,
+              Logo_Path: process.env.CYCLIC_URL + row.Logo_Path,
+              Status: row.Status,
+              Tags: [row.Tag],
+            });
+          } else {
+            project.Tags.push(row.Tag);
+          }
+
+          return acc;
+        }, []);
+
+        res.json(formattedResult);
       }
     );
   });
