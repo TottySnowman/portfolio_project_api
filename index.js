@@ -21,12 +21,13 @@ app.get("/getAllProjects", function (req, res) {
 
     connection.query(
       `SELECT Project.ID, Project.Name, Project.About, Project.Github_Link, 
-        Project.Demo_Link, Project.Logo_Path, status.Status, Tag.Tag 
-        FROM Project 
-        INNER JOIN ProjectStatus as status on Project.FK_Project_Status = status.ID 
-        INNER JOIN Project_Tags on Project_Tags.ProjectID = Project.ID 
-        INNER JOIN  Tag on Project_Tags.TagID = Tag.ID
-        ORDER BY Project.ID`,
+      Project.Demo_Link, Project.Logo_Path, status.Status, Tag.Tag 
+      FROM Project 
+      INNER JOIN ProjectStatus as status on Project.FK_Project_Status = status.ID 
+      INNER JOIN Project_Tags on Project_Tags.ProjectID = Project.ID 
+      INNER JOIN Tag on Project_Tags.TagID = Tag.ID 
+      WHERE Hidden = false 
+      ORDER BY Dev_Date ASC`,
       function (err, projects) {
         if (err) {
           // Handle query error
