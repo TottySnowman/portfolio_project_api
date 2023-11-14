@@ -21,7 +21,7 @@ app.get("/getAllProjects", function (req, res) {
 
     connection.query(
       `SELECT Project.ID, Project.Name, Project.About, Project.Github_Link, 
-      Project.Demo_Link, Project.Logo_Path, status.Status, Tag.Tag 
+      Project.Demo_Link, Project.Logo_Path, status.Status, Tag.Tag, Tag.Icon
       FROM Project 
       INNER JOIN ProjectStatus as status on Project.FK_Project_Status = status.ID 
       INNER JOIN Project_Tags on Project_Tags.ProjectID = Project.ID 
@@ -30,6 +30,7 @@ app.get("/getAllProjects", function (req, res) {
       ORDER BY Dev_Date ASC`,
       function (err, projects) {
         if (err) {
+          console.log(err);
           // Handle query error
           connection.end(); // Close the connection
 
@@ -38,10 +39,6 @@ app.get("/getAllProjects", function (req, res) {
 
         connection.end(); // Close the connection
 
-        /*         projects.forEach((element) => {
-          let oldPath = element.Logo_Path;
-          element.Logo_Path = process.env.CYCLIC_URL + oldPath;
-        }); */
         const formattedResult = projects.reduce((acc, row) => {
           const project = acc.find((p) => p.ProjectID === row.ID);
 
@@ -54,10 +51,18 @@ app.get("/getAllProjects", function (req, res) {
               Demo_Link: row.Demo_Link,
               Logo_Path: process.env.CYCLIC_URL + row.Logo_Path,
               Status: row.Status,
-              Tags: [row.Tag],
+              Tags: [
+                {
+                  Tag: row.Tag,
+                  Icon: row.Icon,
+                },
+              ],
             });
           } else {
-            project.Tags.push(row.Tag);
+            project.Tags.push({
+              Tag: row.Tag,
+              Icon: row.Icon,
+            });
           }
 
           return acc;
