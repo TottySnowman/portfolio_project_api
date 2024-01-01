@@ -8,6 +8,7 @@ const mysql = require("mysql");
 app.use(cors());
 app.use(bodyParser.json());
 app.use("/logo", express.static("logo"));
+
 app.get("/getAllProjects", function (req, res) {
   const connection = mysql.createConnection(config);
 
